@@ -72,7 +72,7 @@ async fn request_user_input_round_trip_resolves_pending() -> anyhow::Result<()> 
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-async fn request_user_input_round_trip_emits_auto_resolution_ms() -> anyhow::Result<()> {
+async fn request_user_input_round_trip_ignores_auto_resolution_ms() -> anyhow::Result<()> {
     request_user_input_round_trip_for_mode(ModeKind::Plan, Some(60_000)).await
 }
 
@@ -176,7 +176,7 @@ async fn request_user_input_round_trip_for_mode(
     .await;
     assert_eq!(request.call_id, call_id);
     assert_eq!(request.questions.len(), 1);
-    assert_eq!(request.auto_resolution_ms, auto_resolution_ms);
+    assert_eq!(request.auto_resolution_ms, None);
     assert_eq!(request.questions[0].is_other, true);
     assert!(
         timeout(Duration::from_millis(200), async {

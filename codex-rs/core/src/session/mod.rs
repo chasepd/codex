@@ -2523,7 +2523,7 @@ impl Session {
             call_id,
             turn_id: turn_context.sub_id.clone(),
             questions: args.questions,
-            auto_resolution_ms: args.auto_resolution_ms,
+            auto_resolution_ms: None,
         });
         turn_context
             .turn_metadata_state
