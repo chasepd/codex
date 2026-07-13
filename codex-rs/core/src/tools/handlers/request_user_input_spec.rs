@@ -69,7 +69,7 @@ pub fn create_request_user_input_tool(description: String) -> ToolSpec {
     );
 
     let auto_resolution_ms_schema = JsonSchema::number(Some(format!(
-        "Optional auto-resolution window in milliseconds, from {MIN_AUTO_RESOLUTION_MS} to {MAX_AUTO_RESOLUTION_MS}. Include this only when the question is useful but non-blocking and continuing with best judgment is acceptable if the user does not answer; omit it when explicit user input is required before continuing. Use {MIN_AUTO_RESOLUTION_MS} for lightly helpful context and up to {MAX_AUTO_RESOLUTION_MS} when the answer would materially unblock better work."
+        "Compatibility field for an auto-resolution window in milliseconds, from {MIN_AUTO_RESOLUTION_MS} to {MAX_AUTO_RESOLUTION_MS}. This build waits indefinitely for user answers, so omit this field."
     )));
 
     let properties = BTreeMap::from([
@@ -139,7 +139,7 @@ pub fn normalize_request_user_input_args(
 pub fn request_user_input_tool_description(available_modes: &[ModeKind]) -> String {
     let allowed_modes = format_allowed_modes(available_modes);
     format!(
-        "Request user input for one to three short questions and wait for the response. Set autoResolutionMs, from {MIN_AUTO_RESOLUTION_MS} to {MAX_AUTO_RESOLUTION_MS} milliseconds, only when the question is useful but non-blocking and continuing with best judgment is acceptable if the user does not answer; omit it when explicit user input is required. This tool is only available in {allowed_modes}."
+        "Request user input for one to three short questions and wait indefinitely for the response. Omit autoResolutionMs; this build accepts it only for compatibility and ignores it. This tool is only available in {allowed_modes}."
     )
 }
 

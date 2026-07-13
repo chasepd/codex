@@ -32,7 +32,7 @@ fn request_user_input_tool_includes_questions_schema() {
                 (
                     "autoResolutionMs".to_string(),
                     JsonSchema::number(Some(
-                        "Optional auto-resolution window in milliseconds, from 60000 to 240000. Include this only when the question is useful but non-blocking and continuing with best judgment is acceptable if the user does not answer; omit it when explicit user input is required before continuing. Use 60000 for lightly helpful context and up to 240000 when the answer would materially unblock better work."
+                        "Compatibility field for an auto-resolution window in milliseconds, from 60000 to 240000. This build waits indefinitely for user answers, so omit this field."
                             .to_string(),
                     )),
                 ),
@@ -231,10 +231,10 @@ fn request_user_input_unavailable_messages_respect_default_mode_feature_flag() {
 fn request_user_input_tool_description_mentions_available_modes() {
     assert_eq!(
         request_user_input_tool_description(&default_available_modes()),
-        "Request user input for one to three short questions and wait for the response. Set autoResolutionMs, from 60000 to 240000 milliseconds, only when the question is useful but non-blocking and continuing with best judgment is acceptable if the user does not answer; omit it when explicit user input is required. This tool is only available in Plan mode.".to_string()
+        "Request user input for one to three short questions and wait indefinitely for the response. Omit autoResolutionMs; this build accepts it only for compatibility and ignores it. This tool is only available in Plan mode.".to_string()
     );
     assert_eq!(
         request_user_input_tool_description(&default_mode_enabled_available_modes()),
-        "Request user input for one to three short questions and wait for the response. Set autoResolutionMs, from 60000 to 240000 milliseconds, only when the question is useful but non-blocking and continuing with best judgment is acceptable if the user does not answer; omit it when explicit user input is required. This tool is only available in Default or Plan mode.".to_string()
+        "Request user input for one to three short questions and wait indefinitely for the response. Omit autoResolutionMs; this build accepts it only for compatibility and ignores it. This tool is only available in Default or Plan mode.".to_string()
     );
 }
