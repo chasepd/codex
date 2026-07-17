@@ -622,6 +622,10 @@ pub struct Config {
     /// Optional override of model selection.
     pub model: Option<String>,
 
+    /// Optional model override used by the TUI when Plan mode is active.
+    /// When unset, Plan mode uses the configured model.
+    pub plan_mode_model: Option<String>,
+
     /// Effective service tier request id preference for new turns.
     /// `default` means the user explicitly selected standard routing.
     pub service_tier: Option<String>,
@@ -4009,6 +4013,7 @@ impl Config {
                 .unwrap_or(false),
             guardian_policy_config,
             model_reasoning_effort: cfg.model_reasoning_effort,
+            plan_mode_model: cfg.plan_mode_model,
             plan_mode_reasoning_effort: cfg.plan_mode_reasoning_effort,
             model_reasoning_summary: cfg.model_reasoning_summary,
             model_catalog,

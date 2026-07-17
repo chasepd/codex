@@ -23,6 +23,9 @@ use codex_protocol::protocol::AskForApproval;
 #[schemars(deny_unknown_fields)]
 pub struct ConfigProfile {
     pub model: Option<String>,
+    /// Optional model override used by the TUI when Plan mode is active.
+    /// When unset, Plan mode uses the configured model.
+    pub plan_mode_model: Option<String>,
     /// Optional explicit service tier request id for new turns (for example
     /// `default`, `priority`, or `flex`; legacy `fast` also works).
     pub service_tier: Option<String>,

@@ -219,6 +219,40 @@ async fn load_config_normalizes_relative_cwd_override() -> std::io::Result<()> {
 }
 
 #[tokio::test]
+async fn load_config_resolves_plan_mode_model() -> std::io::Result<()> {
+    let config_toml: ConfigToml = toml::from_str(
+        r#"
+model = "gpt-5.6-luna"
+plan_mode_model = "gpt-5.6-sol"
+
+[profiles.work]
+plan_mode_model = "gpt-5.6-sol-work"
+"#,
+    )
+    .expect("TOML deserialization should succeed");
+
+    assert_eq!(
+        config_toml
+            .profiles
+            .get("work")
+            .and_then(|profile| profile.plan_mode_model.as_deref()),
+        Some("gpt-5.6-sol-work")
+    );
+
+    let config = Config::load_from_base_config_with_overrides(
+        config_toml,
+        ConfigOverrides::default(),
+        tempdir()?.abs(),
+    )
+    .await?;
+
+    assert_eq!(config.model.as_deref(), Some("gpt-5.6-luna"));
+    assert_eq!(config.plan_mode_model.as_deref(), Some("gpt-5.6-sol"));
+
+    Ok(())
+}
+
+#[tokio::test]
 async fn test_toml_parsing() {
     let history_with_persistence = r#"
 [history]

@@ -3178,6 +3178,8 @@ async fn status_line_model_with_reasoning_updates_on_mode_switch_without_manual_
     let (mut chat, _rx, _op_rx) = make_chatwidget_manual(Some("gpt-5.2")).await;
     chat.set_feature_enabled(Feature::CollaborationModes, /*enabled*/ true);
     chat.config.tui_status_line = Some(vec!["model-with-reasoning".to_string()]);
+    chat.config.plan_mode_model = Some("gpt-5.4".to_string());
+    chat.config.plan_mode_reasoning_effort = Some(ReasoningEffortConfig::High);
     chat.set_reasoning_effort(Some(ReasoningEffortConfig::High));
 
     assert_eq!(status_line_text(&chat), Some("gpt-5.2 high".to_string()));
@@ -3186,7 +3188,7 @@ async fn status_line_model_with_reasoning_updates_on_mode_switch_without_manual_
         .expect("expected plan collaboration mode");
     chat.set_collaboration_mask(plan_mask);
 
-    assert_eq!(status_line_text(&chat), Some("gpt-5.2 medium".to_string()));
+    assert_eq!(status_line_text(&chat), Some("gpt-5.4 high".to_string()));
 
     let default_mask = collaboration_modes::default_mask(chat.model_catalog.as_ref())
         .expect("expected default collaboration mode");
@@ -3204,6 +3206,8 @@ async fn status_line_model_with_reasoning_plan_mode_footer_snapshot() {
     chat.show_welcome_banner = false;
     chat.set_feature_enabled(Feature::CollaborationModes, /*enabled*/ true);
     chat.config.tui_status_line = Some(vec!["model-with-reasoning".to_string()]);
+    chat.config.plan_mode_model = Some("gpt-5.4".to_string());
+    chat.config.plan_mode_reasoning_effort = Some(ReasoningEffortConfig::High);
     chat.set_reasoning_effort(Some(ReasoningEffortConfig::High));
 
     let plan_mask = collaboration_modes::plan_mask(chat.model_catalog.as_ref())
