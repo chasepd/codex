@@ -1,7 +1,11 @@
 mod agents_md;
 mod apps_instructions;
+mod collaboration_mode;
 mod environment;
+mod environments_instructions;
 mod plugins_instructions;
+#[cfg(test)]
+mod test_support;
 
 use crate::context::ContextualUserFragment;
 use codex_extension_api::PreviousWorldStateSection;
@@ -19,7 +23,9 @@ use std::fmt;
 
 pub(crate) use agents_md::AgentsMdState;
 pub(crate) use apps_instructions::AppsInstructionsState;
+pub(crate) use collaboration_mode::CollaborationModeState;
 pub(crate) use environment::EnvironmentsState;
+pub(crate) use environments_instructions::EnvironmentsInstructionsState;
 pub(crate) use plugins_instructions::PluginsInstructionsState;
 
 trait ErasedWorldStateSection: Send + Sync {
