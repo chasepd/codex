@@ -799,6 +799,10 @@
         "personality": {
           "$ref": "#/definitions/Personality"
         },
+        "plan_mode_model": {
+          "description": "Optional model override used by the TUI when Plan mode is active. When unset, Plan mode uses the configured model.",
+          "type": "string"
+        },
         "plan_mode_reasoning_effort": {
           "$ref": "#/definitions/ReasoningEffort"
         },
@@ -5405,6 +5409,10 @@
         }
       ],
       "description": "Optionally specify a personality for the model"
+    },
+    "plan_mode_model": {
+      "description": "Optional model override used by the TUI when Plan mode is active. When unset, Plan mode uses the configured model.",
+      "type": "string"
     },
     "plan_mode_reasoning_effort": {
       "$ref": "#/definitions/ReasoningEffort"

@@ -154,6 +154,9 @@ pub struct OrchestratorFeatureToml {
 pub struct ConfigToml {
     /// Optional override of model selection.
     pub model: Option<String>,
+    /// Optional model override used by the TUI when Plan mode is active.
+    /// When unset, Plan mode uses the configured model.
+    pub plan_mode_model: Option<String>,
     /// Review model override used by the `/review` feature.
     pub review_model: Option<String>,
 

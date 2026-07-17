@@ -133,6 +133,7 @@ fn save_config_resolved_fields(
 ) -> anyhow::Result<()> {
     lock_config.web_search = Some(config.web_search_mode.value());
     lock_config.model_provider = Some(config.model_provider_id.clone());
+    lock_config.plan_mode_model = config.plan_mode_model.clone();
     lock_config.plan_mode_reasoning_effort = config.plan_mode_reasoning_effort.clone();
     lock_config.model_verbosity = config.model_verbosity;
     lock_config.include_permissions_instructions = Some(config.include_permissions_instructions);
@@ -269,6 +270,7 @@ mod tests {
             .features
             .enable(Feature::CurrentTimeReminder)
             .expect("current_time_reminder should be enableable in tests");
+        config.plan_mode_model = Some("gpt-5.6-sol".to_string());
         sc.original_config_do_not_use = Arc::new(config);
         sc.base_instructions = "resolved instructions".to_string();
         sc.developer_instructions = Some("resolved developer instructions".to_string());
@@ -285,6 +287,7 @@ mod tests {
             lock.model_reasoning_effort,
             sc.collaboration_mode.reasoning_effort()
         );
+        assert_eq!(lock.plan_mode_model.as_deref(), Some("gpt-5.6-sol"));
         assert_eq!(lock.profile, None);
         assert!(lock.profiles.is_empty());
         assert!(

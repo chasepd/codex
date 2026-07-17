@@ -1405,6 +1405,56 @@ async fn mode_switch_surfaces_model_change_notification_when_effective_model_cha
 }
 
 #[tokio::test]
+async fn plan_mode_config_overrides_model_and_effort_for_new_plan_turns() {
+    let (mut chat, _rx, mut op_rx) = make_chatwidget_manual(Some("gpt-5.6-luna")).await;
+    chat.thread_id = Some(ThreadId::new());
+    chat.set_feature_enabled(Feature::CollaborationModes, /*enabled*/ true);
+    chat.config.plan_mode_model = Some("gpt-5.6-sol".to_string());
+    chat.config.plan_mode_reasoning_effort = Some(ReasoningEffortConfig::High);
+    chat.set_reasoning_effort(Some(ReasoningEffortConfig::XHigh));
+
+    let plan_mask = collaboration_modes::plan_mask(chat.model_catalog.as_ref())
+        .expect("expected plan collaboration mode");
+    chat.set_collaboration_mask(plan_mask);
+
+    assert_eq!(chat.current_model(), "gpt-5.6-sol");
+    assert_eq!(
+        chat.current_reasoning_effort(),
+        Some(ReasoningEffortConfig::High)
+    );
+
+    chat.set_model("gpt-5.6-manual");
+    let default_mask = collaboration_modes::default_mask(chat.model_catalog.as_ref())
+        .expect("expected default collaboration mode");
+    chat.set_collaboration_mask(default_mask);
+
+    assert_eq!(chat.current_model(), "gpt-5.6-manual");
+    assert_eq!(
+        chat.current_reasoning_effort(),
+        Some(ReasoningEffortConfig::XHigh)
+    );
+
+    let plan_mask = collaboration_modes::plan_mask(chat.model_catalog.as_ref())
+        .expect("expected plan collaboration mode");
+    chat.submit_user_message_with_mode("Draft a plan.".to_string(), plan_mask);
+
+    match next_submit_op(&mut op_rx) {
+        Op::UserTurn {
+            collaboration_mode: Some(collaboration_mode),
+            ..
+        } => {
+            assert_eq!(collaboration_mode.mode, ModeKind::Plan);
+            assert_eq!(collaboration_mode.model(), "gpt-5.6-sol");
+            assert_eq!(
+                collaboration_mode.reasoning_effort(),
+                Some(ReasoningEffortConfig::High)
+            );
+        }
+        other => panic!("expected Plan-mode Op::UserTurn, got {other:?}"),
+    }
+}
+
+#[tokio::test]
 async fn mode_switch_surfaces_reasoning_change_notification_when_model_stays_same() {
     let (mut chat, mut rx, _op_rx) = make_chatwidget_manual(Some("gpt-5.2")).await;
     chat.set_feature_enabled(Feature::CollaborationModes, /*enabled*/ true);
